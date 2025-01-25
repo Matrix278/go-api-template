@@ -11,9 +11,6 @@ RUN go mod download \
 
 FROM alpine:latest AS application
 
-# Install CA certificates
-RUN apk --no-cache add ca-certificates
-
 COPY --from=builder /app/go-backend ./go-backend
 COPY --from=builder /app/configuration/ ./configuration/
 COPY --from=builder /app/docs/ ./docs/
