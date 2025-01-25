@@ -2,9 +2,9 @@ package model
 
 import (
 	"fmt"
+	"go-api-template/pkg/json"
 	"regexp"
 	"strings"
-	"go-api-template/pkg/json"
 
 	goccy "github.com/goccy/go-json"
 
