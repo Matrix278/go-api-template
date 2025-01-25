@@ -28,7 +28,7 @@ func NewUser(
 	}
 }
 
-func (service *user) UserByID(ctx *gin.Context, userID strfmt.UUID4) (*model.UserByIDResponse, error) {
+func (service *user) UserByID(_ *gin.Context, userID strfmt.UUID4) (*model.UserByIDResponse, error) {
 	user, err := service.userRepository.SelectUserByID(userID)
 	if err != nil {
 		return nil, err
