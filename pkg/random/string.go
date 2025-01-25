@@ -1,11 +1,11 @@
-package util
+package random
 
 import (
 	"crypto/rand"
 	"encoding/hex"
 )
 
-func RandomString(n int) string {
+func String(n int) string {
 	bytes := make([]byte, n)
 	if _, err := rand.Read(bytes); err != nil {
 		return ""
