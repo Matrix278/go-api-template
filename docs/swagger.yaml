@@ -1,0 +1,94 @@
+basePath: /api/v1
+definitions:
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserByIDResponse:
+    properties:
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  swagger.StatusBadRequest:
+    properties:
+      code:
+        example: BAD_REQUEST
+        type: string
+      message:
+        example: Bad request
+        type: string
+    type: object
+  swagger.StatusForbidden:
+    properties:
+      code:
+        example: FORBIDDEN
+        type: string
+      message:
+        example: You don't have permission to access this resource
+        type: string
+    type: object
+  swagger.StatusInternalError:
+    properties:
+      code:
+        example: INTERNAL_ERROR
+        type: string
+      message:
+        example: Internal server error
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@gmail.com
+    name: API Support
+    url: https://example.com/
+  description: GO API documentation
+  title: Go API
+  version: "1.1"
+paths:
+  /user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user by ID
+          schema:
+            $ref: '#/definitions/model.UserByIDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/swagger.StatusBadRequest'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/swagger.StatusForbidden'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/swagger.StatusInternalError'
+      summary: Get user by ID
+      tags:
+      - User
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
