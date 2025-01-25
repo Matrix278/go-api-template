@@ -7,16 +7,16 @@ require (
 	github.com/go-openapi/strfmt v0.23.0
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/goccy/go-json v0.10.4
-	github.com/jmoiron/sqlx v1.4.0
-	github.com/joho/godotenv v1.5.1
-	github.com/lib/pq v1.10.9
 	github.com/pkg/errors v0.9.1
 	github.com/rs/cors v1.11.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
+	github.com/swaggo/files v1.0.1
+	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.4
 	go.uber.org/zap v1.27.0
 	gorm.io/driver/postgres v1.5.11
+	gorm.io/gorm v1.25.10
 )
 
 require (
@@ -84,5 +84,4 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/gorm v1.25.10 // indirect
 )

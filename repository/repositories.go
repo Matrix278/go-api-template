@@ -1,11 +1,11 @@
 package repository
 
 type Repositories struct {
-	User *User
+	User IUser
 }
 
 func NewRepositories(connection *Connection) *Repositories {
 	return &Repositories{
-		User: NewUser(connection.db),
+		User: NewUserRepository(connection.db),
 	}
 }

@@ -1,47 +1,32 @@
 package repository
 
 import (
-	"database/sql"
 	"go-api-template/model"
 
 	"github.com/go-openapi/strfmt"
-	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 type IUser interface {
-	Begin() (*sqlx.Tx, error)
 	SelectUserByID(userID strfmt.UUID4) (*model.User, error)
 }
 
-type User struct {
-	db *sqlx.DB
+type userRepository struct {
+	db *gorm.DB
 }
 
-func NewUser(db *sqlx.DB) *User {
-	return &User{
+func NewUserRepository(db *gorm.DB) IUser {
+	return &userRepository{
 		db: db,
 	}
 }
 
-func (repository *User) Begin() (*sqlx.Tx, error) {
-	return repository.db.Beginx()
-}
-
-func (repository *User) SelectUserByID(userID strfmt.UUID4) (*model.User, error) {
+func (repository *userRepository) SelectUserByID(userID strfmt.UUID4) (*model.User, error) {
 	var user model.User
 
-	if err := repository.db.Get(&user, `
-		SELECT
-			*
-		FROM
-			users
-		WHERE
-			id = $1
-	`,
-		userID,
-	); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+	if err := repository.db.Where("id = ?", userID).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, model.ErrUserNotFound
 		}
 

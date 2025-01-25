@@ -5,9 +5,11 @@ import (
 	"go-api-template/configuration"
 	"go-api-template/controller"
 	"go-api-template/middleware"
+	"go-api-template/model"
 	"go-api-template/pkg/logger"
 	"go-api-template/repository"
 	"go-api-template/service"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -34,6 +36,11 @@ func main() {
 	cfg, err := configuration.Load()
 	if err != nil {
 		logger.Errorf("configuration loading failed: %v", err)
+	}
+
+	// Initialize validation
+	if err := model.InitValidation(); err != nil {
+		log.Fatalf("failed to initialize validation: %v", err)
 	}
 
 	// Initialize the database connection

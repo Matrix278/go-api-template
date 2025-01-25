@@ -1,23 +1,34 @@
 package middleware
 
 import (
-	"net/http"
+	"go-api-template/configuration"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
 )
 
-func CORSMiddleware() gin.HandlerFunc {
+// CORSMiddleware sets up CORS headers based on the configuration.
+type CORSMiddleware struct {
+	AllowedOrigins []string
+}
+
+func NewCORSMiddleware(cfg *configuration.New) *CORSMiddleware {
+	return &CORSMiddleware{
+		AllowedOrigins: cfg.AllowedOrigins,
+	}
+}
+
+func (middleware *CORSMiddleware) Handler() gin.HandlerFunc {
 	corsConfig := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodOptions},
+		AllowedOrigins: middleware.AllowedOrigins,
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"*"},
 	})
 
 	return func(ctx *gin.Context) {
 		corsConfig.HandlerFunc(ctx.Writer, ctx.Request)
 
-		if ctx.Request.Method != http.MethodOptions {
+		if ctx.Request.Method != "OPTIONS" {
 			ctx.Next()
 		}
 	}
