@@ -20,7 +20,7 @@ type New struct {
 }
 
 func Load() (*New, error) {
-	if APP_ENV := viper.GetString("APP_ENV"); APP_ENV != "production" {
+	if appName := viper.GetString("APP_ENV"); appName != "production" {
 		viper.SetConfigFile(".env")
 	}
 

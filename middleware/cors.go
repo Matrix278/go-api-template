@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"go-api-template/configuration"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/cors"
@@ -28,7 +29,7 @@ func (middleware *CORSMiddleware) Handler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		corsConfig.HandlerFunc(ctx.Writer, ctx.Request)
 
-		if ctx.Request.Method != "OPTIONS" {
+		if ctx.Request.Method != http.MethodOptions {
 			ctx.Next()
 		}
 	}
