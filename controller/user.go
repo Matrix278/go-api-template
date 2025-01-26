@@ -27,11 +27,11 @@ func NewUser(
 //	@Tags			User
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string					true	"User ID"
-//	@Success		200	{object}	model.UserByIDResponse	"Get user by ID"
-//	@Failure		400	{object}	swagger.StatusBadRequest
-//	@Failure		403	{object}	swagger.StatusForbidden
-//	@Failure		500	{object}	swagger.StatusInternalError
+//	@Param			user_id	path		string					true	"User ID"
+//	@Success		200		{object}	model.UserByIDResponse	"Get user by ID"
+//	@Failure		400		{object}	swagger.StatusBadRequest
+//	@Failure		403		{object}	swagger.StatusForbidden
+//	@Failure		500		{object}	swagger.StatusInternalError
 //	@Router			/user/{id} [get]
 func (controller *User) UserByID(ctx *gin.Context) {
 	// Validate path params

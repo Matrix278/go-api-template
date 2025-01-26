@@ -53,7 +53,7 @@ info:
     url: https://example.com/
   description: GO API documentation
   title: Go API
-  version: "1.1"
+  version: "1.0"
 paths:
   /user/{id}:
     get:
@@ -63,7 +63,7 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: id
+        name: user_id
         required: true
         type: string
       produces:
