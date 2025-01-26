@@ -1,4 +1,4 @@
-package mapping
+package mapper
 
 import (
 	"go-api-template/model"

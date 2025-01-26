@@ -4,7 +4,6 @@ import (
 	"go-api-template/configuration"
 	"go-api-template/model"
 	"go-api-template/repository"
-	mapping "go-api-template/service/mappers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
@@ -36,6 +35,6 @@ func (service *user) UserByID(_ *gin.Context, userID strfmt.UUID4) (*model.UserB
 	}
 
 	return &model.UserByIDResponse{
-		User: mapping.ToUserModel(user),
+		User: mapper.ToUserModel(user),
 	}, nil
 }
