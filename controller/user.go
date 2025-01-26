@@ -44,15 +44,19 @@ func (controller *User) UserByID(ctx *gin.Context) {
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
-		// TODO: make a common error handler to not repeat the same code
-		if errors.Is(err, commonerrors.ErrUserNotFound) {
-			StatusUnprocessableEntity(ctx, err)
-			return
-		}
-
-		StatusInternalServerError(ctx, err)
+		handleCommonErrors(ctx, err)
 		return
 	}
 
 	StatusOKWithResponseModel(ctx, response)
+}
+
+// handleCommonErrors handles common errors and returns appropriate HTTP status codes
+func handleCommonErrors(ctx *gin.Context, err error) {
+	if _, ok := err.(*commonerrors.CommonError); ok {
+		StatusUnprocessableEntity(ctx, err)
+		return
+	}
+
+	StatusInternalServerError(ctx, err)
 }
