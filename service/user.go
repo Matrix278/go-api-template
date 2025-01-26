@@ -1,8 +1,10 @@
 package service
 
 import (
+	"errors"
 	"go-api-template/configuration"
 	"go-api-template/model"
+	"go-api-template/model/commonerrors"
 	"go-api-template/repository"
 	"go-api-template/service/mapper"
 
@@ -32,6 +34,10 @@ func NewUser(
 func (service *user) UserByID(_ *gin.Context, userID strfmt.UUID4) (*model.UserByIDResponse, error) {
 	user, err := service.userRepository.SelectUserByID(userID)
 	if err != nil {
+		if errors.Is(err, commonerrors.ErrUserNotFound) {
+			return nil, commonerrors.ErrUserNotFound
+		}
+
 		return nil, err
 	}
 

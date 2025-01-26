@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"go-api-template/model/commonerrors"
 	"go-api-template/service"
 
 	"github.com/gin-gonic/gin"
@@ -43,6 +44,12 @@ func (controller *User) UserByID(ctx *gin.Context) {
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
+		// TODO: make a common error handler to not repeat the same code
+		if errors.Is(err, commonerrors.ErrUserNotFound) {
+			StatusUnprocessableEntity(ctx, err)
+			return
+		}
+
 		StatusInternalServerError(ctx, err)
 		return
 	}
