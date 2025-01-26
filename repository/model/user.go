@@ -11,5 +11,5 @@ type User struct {
 	Username  string       `db:"username"`
 	Email     string       `db:"email"`
 	CreatedAt time.Time    `db:"created_at"`
-	UpdatedAt time.Time    `db:"updated_at"`
+	UpdatedAt *time.Time   `db:"updated_at"`
 }
