@@ -30,7 +30,7 @@ func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gi
 	apiRouter := router.Group(cfg.APIPath)
 	apiRouter.Use(logger.RequestsLogHandler())
 
-	apiRouter.GET("/user/:user_id", controllers.User.UserByID).Use(authorizationHeaderRequired())
+	apiRouter.GET("/users/:user_id", authorizationHeaderRequired(), controllers.User.UserByID)
 
 	return router, nil
 }

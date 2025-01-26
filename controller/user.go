@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"go-api-template/model/commonerrors"
 	"go-api-template/service"
 
 	"github.com/gin-gonic/gin"
@@ -27,12 +28,12 @@ func NewUser(
 //	@Tags			User
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string					true	"User ID"
-//	@Success		200	{object}	model.UserByIDResponse	"Get user by ID"
-//	@Failure		400	{object}	swagger.StatusBadRequest
-//	@Failure		403	{object}	swagger.StatusForbidden
-//	@Failure		500	{object}	swagger.StatusInternalError
-//	@Router			/user/{id} [get]
+//	@Param			user_id	path		string					true	"User ID"
+//	@Success		200		{object}	model.UserByIDResponse	"Get user by ID"
+//	@Failure		400		{object}	swagger.StatusBadRequest
+//	@Failure		403		{object}	swagger.StatusForbidden
+//	@Failure		500		{object}	swagger.StatusInternalError
+//	@Router			/users/{user_id} [get]
 func (controller *User) UserByID(ctx *gin.Context) {
 	// Validate path params
 	userID := ctx.Param("user_id")
@@ -43,9 +44,19 @@ func (controller *User) UserByID(ctx *gin.Context) {
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
-		StatusInternalServerError(ctx, err)
+		handleCommonErrors(ctx, err)
 		return
 	}
 
 	StatusOKWithResponseModel(ctx, response)
+}
+
+// handleCommonErrors handles common errors and returns appropriate HTTP status codes
+func handleCommonErrors(ctx *gin.Context, err error) {
+	if _, ok := err.(*commonerrors.CommonError); ok {
+		StatusUnprocessableEntity(ctx, err)
+		return
+	}
+
+	StatusInternalServerError(ctx, err)
 }
