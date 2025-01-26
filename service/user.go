@@ -4,6 +4,7 @@ import (
 	"go-api-template/configuration"
 	"go-api-template/model"
 	"go-api-template/repository"
+	"go-api-template/service/mapper"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
