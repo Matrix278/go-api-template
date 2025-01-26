@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user/{id}": {
+        "/users/{user_id}": {
             "get": {
                 "description": "Get user by ID",
                 "consumes": [

@@ -32,7 +32,7 @@ func NewUser(
 //	@Failure		400		{object}	swagger.StatusBadRequest
 //	@Failure		403		{object}	swagger.StatusForbidden
 //	@Failure		500		{object}	swagger.StatusInternalError
-//	@Router			/user/{id} [get]
+//	@Router			/users/{user_id} [get]
 func (controller *User) UserByID(ctx *gin.Context) {
 	// Validate path params
 	userID := ctx.Param("user_id")

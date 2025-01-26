@@ -13,7 +13,7 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
-        "/user/{id}": {
+        "/users/{user_id}": {
             "get": {
                 "description": "Get user by ID",
                 "consumes": [
