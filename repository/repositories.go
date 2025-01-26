@@ -6,6 +6,6 @@ type Repositories struct {
 
 func NewRepositories(connection *Connection) *Repositories {
 	return &Repositories{
-		User: NewUserRepository(connection.db),
+		User: NewUser(connection.db),
 	}
 }
