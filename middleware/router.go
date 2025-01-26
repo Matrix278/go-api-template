@@ -31,7 +31,7 @@ func NewRouter(cfg *configuration.Config, controllers *controller.Controllers) (
 	apiRouter.Use(CORSMiddleware())
 	apiRouter.Use(logger.RequestsLogHandler())
 
-	apiRouter.GET("/users/:user_id", controllers.User.UserByID).Use(authorizationHeaderRequired())
+	apiRouter.GET("/users/:user_id", authorizationHeaderRequired(), controllers.User.UserByID)
 
 	return router, nil
 }
