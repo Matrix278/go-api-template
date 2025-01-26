@@ -1,23 +1,5 @@
 basePath: /api/v1
 definitions:
-  model.User:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: string
-      updated_at:
-        type: string
-      username:
-        type: string
-    type: object
-  model.UserByIDResponse:
-    properties:
-      user:
-        $ref: '#/definitions/model.User'
-    type: object
   swagger.StatusBadRequest:
     properties:
       code:
@@ -45,6 +27,29 @@ definitions:
         example: Internal server error
         type: string
     type: object
+  swagger.UserByIDResponseSwagger:
+    properties:
+      user:
+        $ref: '#/definitions/swagger.UserSwagger'
+    type: object
+  swagger.UserSwagger:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      email:
+        example: test@test.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      username:
+        example: JohnDoe
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -62,6 +67,7 @@ paths:
       description: Get user by ID
       parameters:
       - description: User ID
+        format: uuid
         in: path
         name: user_id
         required: true
@@ -72,7 +78,7 @@ paths:
         "200":
           description: Get user by ID
           schema:
-            $ref: '#/definitions/model.UserByIDResponse'
+            $ref: '#/definitions/swagger.UserByIDResponseSwagger'
         "400":
           description: Bad Request
           schema:

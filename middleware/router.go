@@ -7,9 +7,6 @@ import (
 	"go-api-template/model"
 	"go-api-template/pkg/logger"
 
-	// Import the Swagger docs package to register the generated documentation with the Swagger router.
-	_ "go-api-template/docs"
-
 	"github.com/gin-gonic/gin"
 )
 

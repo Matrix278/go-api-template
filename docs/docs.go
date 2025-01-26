@@ -35,6 +35,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "format": "uuid",
                         "description": "User ID",
                         "name": "user_id",
                         "in": "path",
@@ -45,7 +46,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Get user by ID",
                         "schema": {
-                            "$ref": "#/definitions/model.UserByIDResponse"
+                            "$ref": "#/definitions/swagger.UserByIDResponseSwagger"
                         }
                     },
                     "400": {
@@ -71,34 +72,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.User": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserByIDResponse": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/model.User"
-                }
-            }
-        },
         "swagger.StatusBadRequest": {
             "type": "object",
             "properties": {
@@ -135,6 +108,39 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Internal server error"
+                }
+            }
+        },
+        "swagger.UserByIDResponseSwagger": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/swagger.UserSwagger"
+                }
+            }
+        },
+        "swagger.UserSwagger": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         }
