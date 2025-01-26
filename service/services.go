@@ -10,7 +10,7 @@ type Services struct {
 }
 
 func NewServices(
-	cfg *configuration.New,
+	cfg *configuration.Env,
 	repository *repository.Repositories,
 ) *Services {
 	return &Services{

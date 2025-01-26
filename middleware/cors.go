@@ -13,7 +13,7 @@ type CORSMiddleware struct {
 	AllowedOrigins []string
 }
 
-func NewCORSMiddleware(cfg *configuration.New) *CORSMiddleware {
+func NewCORSMiddleware(cfg *configuration.Env) *CORSMiddleware {
 	return &CORSMiddleware{
 		AllowedOrigins: cfg.AllowedOrigins,
 	}
@@ -22,7 +22,7 @@ func NewCORSMiddleware(cfg *configuration.New) *CORSMiddleware {
 func (middleware *CORSMiddleware) Handler() gin.HandlerFunc {
 	corsConfig := cors.New(cors.Options{
 		AllowedOrigins: middleware.AllowedOrigins,
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions},
 		AllowedHeaders: []string{"*"},
 	})
 

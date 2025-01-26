@@ -11,7 +11,7 @@ type Middlewares struct {
 	SecurityHeaders gin.HandlerFunc
 }
 
-func NewMiddlewares(cfg *configuration.New) *Middlewares {
+func NewMiddlewares(cfg *configuration.Env) *Middlewares {
 	corsMiddleware := NewCORSMiddleware(cfg)
 	securityHeadersMiddleware := NewSecurityHeadersMiddleware(cfg)
 

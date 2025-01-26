@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type New struct {
+type Env struct {
 	AppHost          string
 	AppPort          string
 	APIPath          string
@@ -19,7 +19,7 @@ type New struct {
 	AllowedOrigins   []string
 }
 
-func Load() (*New, error) {
+func Load() (*Env, error) {
 	if appName := viper.GetString("APP_ENV"); appName != "production" {
 		viper.SetConfigFile(".env")
 	}
@@ -29,7 +29,7 @@ func Load() (*New, error) {
 	allowedOrigins := viper.GetString("ALLOWED_ORIGINS")
 	origins := strings.Split(allowedOrigins, ",")
 
-	return &New{
+	return &Env{
 		AppHost:          viper.GetString("APP_HOST"),
 		AppPort:          viper.GetString("APP_PORT"),
 		APIPath:          viper.GetString("API_PATH"),

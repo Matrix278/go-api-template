@@ -5,15 +5,15 @@ import (
 	"go-api-template/configuration"
 	"go-api-template/pkg/logger"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq" // driver for PostgreSQL
 )
 
 type Connection struct {
-	db *gorm.DB
+	db *sqlx.DB
 }
 
-func NewConnection(cfg *configuration.New) *Connection {
+func NewConnection(cfg *configuration.Env) *Connection {
 	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.PostgresUser,
 		cfg.PostgresPassword,
@@ -22,8 +22,12 @@ func NewConnection(cfg *configuration.New) *Connection {
 		cfg.PostgresDB,
 	)
 
-	db, err := gorm.Open(postgres.Open(psqlURL), &gorm.Config{})
+	db, err := sqlx.Open("postgres", psqlURL)
 	if err != nil {
+		logger.Fatalf("connecting to database failed. %v", err)
+	}
+
+	if err = db.Ping(); err != nil {
 		logger.Fatalf("connecting to database failed. %v", err)
 	}
 
@@ -35,12 +39,7 @@ func NewConnection(cfg *configuration.New) *Connection {
 }
 
 func (connection *Connection) Close() {
-	sqlDB, err := connection.db.DB()
-	if err != nil {
-		logger.Fatalf("getting database instance failed. %v", err)
-	}
-
-	if err = sqlDB.Close(); err != nil {
+	if err := connection.db.Close(); err != nil {
 		logger.Fatalf("closing database connection failed. %v", err)
 	}
 }

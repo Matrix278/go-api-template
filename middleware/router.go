@@ -7,13 +7,12 @@ import (
 	"go-api-template/pkg/logger"
 
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"     // swagger embed files
-	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
-
+	// swagger embed files
+	// gin-swagger middleware
 	_ "go-api-template/docs" // Import the Swagger docs package to register the generated documentation with the Swagger router.
 )
 
-func NewRouter(cfg *configuration.New, controllers *controller.Controllers) (*gin.Engine, error) {
+func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gin.Engine, error) {
 	if cfg.AppEnv == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -25,8 +24,8 @@ func NewRouter(cfg *configuration.New, controllers *controller.Controllers) (*gi
 	router.Use(middleware.SecurityHeaders)
 	router.Use(middleware.CORS)
 
-	// Serve swagger docs
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Serve swagger ReDoc HTML
+	router.StaticFile("/docs", "./docs/index.html")
 
 	apiRouter := router.Group(cfg.APIPath)
 	apiRouter.Use(logger.RequestsLogHandler())
