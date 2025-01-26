@@ -28,8 +28,8 @@ func NewUser(
 //	@Tags			User
 //	@Accept			json
 //	@Produce		json
-//	@Param			user_id	path		string					true	"User ID"
-//	@Success		200		{object}	model.UserByIDResponse	"Get user by ID"
+//	@Param			user_id	path		string							true	"User ID"	format(uuid)
+//	@Success		200		{object}	swagger.UserByIDResponseSwagger	"Get user by ID"
 //	@Failure		400		{object}	swagger.StatusBadRequest
 //	@Failure		403		{object}	swagger.StatusForbidden
 //	@Failure		500		{object}	swagger.StatusInternalError
