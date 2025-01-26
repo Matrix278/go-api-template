@@ -2,7 +2,8 @@ package repository
 
 import (
 	"database/sql"
-	"go-api-template/model"
+	"go-api-template/model/commonerrors"
+	repositorymodel "go-api-template/repository/model"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/jmoiron/sqlx"
@@ -11,7 +12,7 @@ import (
 
 type IUser interface {
 	Begin() (*sqlx.Tx, error)
-	SelectUserByID(userID strfmt.UUID4) (*model.User, error)
+	SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error)
 }
 
 type User struct {
@@ -28,8 +29,8 @@ func (repository *User) Begin() (*sqlx.Tx, error) {
 	return repository.db.Beginx()
 }
 
-func (repository *User) SelectUserByID(userID strfmt.UUID4) (*model.User, error) {
-	var user model.User
+func (repository *User) SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error) {
+	var user repositorymodel.User
 
 	if err := repository.db.Get(&user, `
 		SELECT
@@ -42,7 +43,7 @@ func (repository *User) SelectUserByID(userID strfmt.UUID4) (*model.User, error)
 		userID,
 	); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, model.ErrUserNotFound
+			return nil, commonerrors.ErrUserNotFound
 		}
 
 		return nil, errors.Wrap(err, "selecting user by ID failed")

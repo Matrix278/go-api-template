@@ -57,10 +57,10 @@ func StatusInternalServerError(ctx *gin.Context, err error) {
 	})
 }
 
-func StatusUnprocessableContent(ctx *gin.Context, err error) {
+func StatusUnprocessableEntity(ctx *gin.Context, err error) {
 	ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 		"message": err.Error(),
-		"code":    "UNPROCESSABLE_CONTENT",
+		"code":    "UNPROCESSABLE_ENTITY",
 	})
 }
 

@@ -1,9 +1,15 @@
 package model
 
+import (
+	"time"
+
+	"github.com/go-openapi/strfmt"
+)
+
 type User struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID        strfmt.UUID4 `json:"id"`
+	Username  string       `json:"username"`
+	Email     string       `json:"email"`
+	CreatedAt time.Time    `json:"created_at"`
+	UpdatedAt *time.Time   `json:"updated_at"`
 }
