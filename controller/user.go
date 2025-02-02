@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"go-api-template/model/commonerrors"
 	"go-api-template/service"
 
 	"github.com/gin-gonic/gin"
@@ -46,19 +45,9 @@ func (controller *user) UserByID(ctx *gin.Context) {
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
-		handleCommonErrors(ctx, err)
+		HandleCommonErrors(ctx, err)
 		return
 	}
 
 	StatusOKWithResponseModel(ctx, response)
-}
-
-// handleCommonErrors handles common errors and returns appropriate HTTP status codes
-func handleCommonErrors(ctx *gin.Context, err error) {
-	if _, ok := err.(*commonerrors.CommonError); ok {
-		StatusUnprocessableEntity(ctx, err)
-		return
-	}
-
-	StatusInternalServerError(ctx, err)
 }
