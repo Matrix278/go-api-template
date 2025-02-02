@@ -5,7 +5,7 @@ services:
     image: postgres
     restart: always
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - ${POSTGRES_PORT}:5432
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -23,8 +23,8 @@ services:
       - .env
     environment:
       - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - APP_ENV=local
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - APP_ENV=${APP_ENV}
     build:
       context: .
       dockerfile: Dockerfile
