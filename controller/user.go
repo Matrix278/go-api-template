@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"errors"
+	"go-api-template/model/commonerrors"
 	"go-api-template/service"
 
 	"github.com/gin-gonic/gin"
@@ -39,7 +39,7 @@ func (controller *user) UserByID(ctx *gin.Context) {
 	// Validate path params
 	userID := ctx.Param("user_id")
 	if !strfmt.IsUUID4(userID) {
-		StatusBadRequest(ctx, errors.New("invalid user_id"))
+		StatusBadRequest(ctx, commonerrors.ErrInvalidUserID)
 		return
 	}
 

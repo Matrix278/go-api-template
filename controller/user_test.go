@@ -61,7 +61,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsBadRequest_InCaseOfUserIDIsNotV
 	var actualResponse model.BadRequestResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
-	suite.Equal("invalid user_id", actualResponse.Message)
+	suite.Equal(commonerrors.ErrInvalidUserID.Error(), actualResponse.Message)
 }
 
 func (suite *UserTestSuite) Test_UserByID_ReturnsUnprocessableEntity_InCaseOfUserNotFound() {
