@@ -3,6 +3,7 @@ package configuration
 import (
 	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -22,6 +23,12 @@ type Env struct {
 func Load() (*Env, error) {
 	if appName := viper.GetString("APP_ENV"); appName != "production" {
 		viper.SetConfigFile(".env")
+	}
+
+	if err := viper.ReadInConfig(); err == nil {
+		if err := godotenv.Load(); err != nil {
+			return nil, err
+		}
 	}
 
 	viper.AutomaticEnv()
