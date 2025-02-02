@@ -1,4 +1,4 @@
-FROM golang:1.23.0-bookworm AS builder
+FROM golang:1.23.5-bookworm AS builder
 
 ARG APP_PORT
 
