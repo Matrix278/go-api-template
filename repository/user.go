@@ -4,15 +4,15 @@ import (
 	"database/sql"
 	"go-api-template/model/commonerrors"
 	repositorymodel "go-api-template/repository/model"
+	"strings"
 
-	"github.com/go-openapi/strfmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
 type IUser interface {
 	Begin() (*sqlx.Tx, error)
-	SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error)
+	SelectUserByFilter(filter repositorymodel.UsersFilter) (*repositorymodel.User, error)
 }
 
 type user struct {
@@ -29,23 +29,39 @@ func (repository *user) Begin() (*sqlx.Tx, error) {
 	return repository.db.Beginx()
 }
 
-func (repository *user) SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error) {
+func (repository *user) SelectUserByFilter(filter repositorymodel.UsersFilter) (*repositorymodel.User, error) {
 	var user repositorymodel.User
+	whereCondition, args := buildUsersWhereCondition(filter)
 
-	if err := repository.db.Get(&user, `
+	query := `
         SELECT
             *
         FROM
             users
-        WHERE
-            id = $1
-    `, userID); err != nil {
+    `
+	if whereCondition != "" {
+		query += " WHERE " + whereCondition
+	}
+
+	if err := repository.db.Get(&user, query, args...); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, commonerrors.ErrUserNotFound
 		}
 
-		return nil, errors.Wrap(err, "selecting user by ID failed")
+		return nil, errors.Wrap(err, "selecting user by filter failed")
 	}
 
 	return &user, nil
+}
+
+func buildUsersWhereCondition(filter repositorymodel.UsersFilter) (string, []interface{}) {
+	var conditions []string
+	var args []interface{}
+
+	if filter.ID != nil {
+		conditions = append(conditions, "id = $1")
+		args = append(args, *filter.ID)
+	}
+
+	return strings.Join(conditions, " AND "), args
 }

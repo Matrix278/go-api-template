@@ -4,6 +4,7 @@ import (
 	"go-api-template/configuration"
 	"go-api-template/model"
 	"go-api-template/repository"
+	repositorymodel "go-api-template/repository/model"
 	"go-api-template/service/mapper"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,11 @@ func NewUser(
 }
 
 func (service *user) UserByID(_ *gin.Context, userID strfmt.UUID4) (*model.UserByIDResponse, error) {
-	user, err := service.userRepository.SelectUserByID(userID)
+	filter := repositorymodel.UsersFilter{
+		ID: &userID,
+	}
+
+	user, err := service.userRepository.SelectUserByFilter(filter)
 	if err != nil {
 		return nil, err
 	}
