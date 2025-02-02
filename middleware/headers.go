@@ -8,7 +8,7 @@ import (
 
 type SecurityHeadersMiddleware struct{}
 
-func NewSecurityHeadersMiddleware(cfg *configuration.Env) *SecurityHeadersMiddleware {
+func NewSecurityHeadersMiddleware(_ *configuration.Env) *SecurityHeadersMiddleware {
 	return &SecurityHeadersMiddleware{}
 }
 
