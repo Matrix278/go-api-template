@@ -1,15 +1,26 @@
 basePath: /api/v1
 definitions:
-  swagger.StatusBadRequest:
+  model.BadRequestResponse:
     properties:
       code:
         example: BAD_REQUEST
         type: string
+      errors:
+        items:
+          properties:
+            field:
+              example: name
+              type: string
+            message:
+              example: Name is required
+              type: string
+          type: object
+        type: array
       message:
         example: Bad request
         type: string
     type: object
-  swagger.StatusForbidden:
+  model.ForbiddenResponse:
     properties:
       code:
         example: FORBIDDEN
@@ -18,7 +29,7 @@ definitions:
         example: You don't have permission to access this resource
         type: string
     type: object
-  swagger.StatusInternalError:
+  model.InternalErrorResponse:
     properties:
       code:
         example: INTERNAL_ERROR
@@ -27,12 +38,12 @@ definitions:
         example: Internal server error
         type: string
     type: object
-  swagger.UserByIDResponseSwagger:
+  model.UserByIDResponseSwagger:
     properties:
       user:
-        $ref: '#/definitions/swagger.UserSwagger'
+        $ref: '#/definitions/model.UserSwagger'
     type: object
-  swagger.UserSwagger:
+  model.UserSwagger:
     properties:
       created_at:
         example: "2021-01-01T00:00:00Z"
@@ -78,19 +89,19 @@ paths:
         "200":
           description: Get user by ID
           schema:
-            $ref: '#/definitions/swagger.UserByIDResponseSwagger'
+            $ref: '#/definitions/model.UserByIDResponseSwagger'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StatusBadRequest'
+            $ref: '#/definitions/model.BadRequestResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/swagger.StatusForbidden'
+            $ref: '#/definitions/model.ForbiddenResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StatusInternalError'
+            $ref: '#/definitions/model.InternalErrorResponse'
       summary: Get user by ID
       tags:
       - User

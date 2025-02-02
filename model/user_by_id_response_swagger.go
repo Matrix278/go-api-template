@@ -1,4 +1,4 @@
-package swagger
+package model
 
 type UserByIDResponseSwagger struct {
 	User *UserSwagger `json:"user"`

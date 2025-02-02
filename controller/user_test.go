@@ -2,7 +2,8 @@ package controller
 
 import (
 	"encoding/json"
-	model "go-api-template/model"
+	"go-api-template/model"
+	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/random"
 	"go-api-template/service"
 	"net/http"
@@ -57,10 +58,31 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsBadRequest_InCaseOfUserIDIsNotV
 
 	// Assert
 	suite.Equal(http.StatusBadRequest, suite.responseRecorder.Code)
-	var actualResponse model.BadRequestWithValidationErrorsResponse
+	var actualResponse model.BadRequestResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
 	suite.Equal("invalid user_id", actualResponse.Message)
+}
+
+func (suite *UserTestSuite) Test_UserByID_ReturnsUnprocessableEntity_InCaseOfUserNotFound() {
+	// Arrange
+	suite.userServiceMock.
+		On("UserByID", mock.Anything, suite.userID).
+		Return(nil, commonerrors.ErrUserNotFound).
+		Once()
+
+	suite.ctx.Request = httptest.NewRequest(http.MethodGet, "/users/"+suite.userID.String(), nil)
+	suite.ctx.Params = append(suite.ctx.Params, gin.Param{Key: "user_id", Value: suite.userID.String()})
+
+	// Act
+	suite.controller.UserByID(suite.ctx)
+
+	// Assert
+	suite.Equal(http.StatusUnprocessableEntity, suite.responseRecorder.Code)
+	var actualResponse model.UnprocessableEntityResponse
+	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
+	suite.NoError(err)
+	suite.Equal(commonerrors.ErrUserNotFound.Error(), actualResponse.Message)
 }
 
 func (suite *UserTestSuite) Test_UserByID_ReturnsResponse_InCaseOfSuccess() {

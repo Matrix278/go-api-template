@@ -30,10 +30,10 @@ func NewUser(service service.IUser) IUser {
 //	@Accept			json
 //	@Produce		json
 //	@Param			user_id	path		string							true	"User ID"	format(uuid)
-//	@Success		200		{object}	swagger.UserByIDResponseSwagger	"Get user by ID"
-//	@Failure		400		{object}	swagger.StatusBadRequest
-//	@Failure		403		{object}	swagger.StatusForbidden
-//	@Failure		500		{object}	swagger.StatusInternalError
+//	@Success		200		{object}	model.UserByIDResponseSwagger	"Get user by ID"
+//	@Failure		400		{object}	model.BadRequestResponse
+//	@Failure		403		{object}	model.ForbiddenResponse
+//	@Failure		500		{object}	model.InternalErrorResponse
 //	@Router			/users/{user_id} [get]
 func (controller *user) UserByID(ctx *gin.Context) {
 	// Validate path params

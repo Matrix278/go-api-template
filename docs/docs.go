@@ -46,25 +46,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Get user by ID",
                         "schema": {
-                            "$ref": "#/definitions/swagger.UserByIDResponseSwagger"
+                            "$ref": "#/definitions/model.UserByIDResponseSwagger"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusBadRequest"
+                            "$ref": "#/definitions/model.BadRequestResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusForbidden"
+                            "$ref": "#/definitions/model.ForbiddenResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusInternalError"
+                            "$ref": "#/definitions/model.InternalErrorResponse"
                         }
                     }
                 }
@@ -72,12 +72,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "swagger.StatusBadRequest": {
+        "model.BadRequestResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "string",
                     "example": "BAD_REQUEST"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "string",
+                                "example": "name"
+                            },
+                            "message": {
+                                "type": "string",
+                                "example": "Name is required"
+                            }
+                        }
+                    }
                 },
                 "message": {
                     "type": "string",
@@ -85,7 +101,7 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StatusForbidden": {
+        "model.ForbiddenResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -98,7 +114,7 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StatusInternalError": {
+        "model.InternalErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -111,15 +127,15 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.UserByIDResponseSwagger": {
+        "model.UserByIDResponseSwagger": {
             "type": "object",
             "properties": {
                 "user": {
-                    "$ref": "#/definitions/swagger.UserSwagger"
+                    "$ref": "#/definitions/model.UserSwagger"
                 }
             }
         },
-        "swagger.UserSwagger": {
+        "model.UserSwagger": {
             "type": "object",
             "properties": {
                 "created_at": {

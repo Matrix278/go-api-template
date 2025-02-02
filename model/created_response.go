@@ -1,5 +1,5 @@
-package swagger
+package model
 
-type StatusCreated struct {
+type CreatedResponse struct {
 	Message string `json:"message" example:"Resource created successfully"`
 }
