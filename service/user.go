@@ -15,12 +15,12 @@ type IUser interface {
 }
 
 type user struct {
-	cfg            *configuration.Config
+	cfg            *configuration.Env
 	userRepository repository.IUser
 }
 
 func NewUser(
-	cfg *configuration.Config,
+	cfg *configuration.Env,
 	userRepository repository.IUser,
 ) IUser {
 	return &user{

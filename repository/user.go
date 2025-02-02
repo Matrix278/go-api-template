@@ -19,7 +19,7 @@ type User struct {
 	db *sqlx.DB
 }
 
-func NewUser(db *sqlx.DB) *User {
+func NewUser(db *sqlx.DB) IUser {
 	return &User{
 		db: db,
 	}
@@ -33,15 +33,13 @@ func (repository *User) SelectUserByID(userID strfmt.UUID4) (*repositorymodel.Us
 	var user repositorymodel.User
 
 	if err := repository.db.Get(&user, `
-		SELECT
-			*
-		FROM
-			users
-		WHERE
-			id = $1
-	`,
-		userID,
-	); err != nil {
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            id = $1
+    `, userID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, commonerrors.ErrUserNotFound
 		}

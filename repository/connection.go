@@ -6,7 +6,6 @@ import (
 	"go-api-template/pkg/logger"
 
 	"github.com/jmoiron/sqlx"
-
 	_ "github.com/lib/pq" // driver for PostgreSQL
 )
 
@@ -14,7 +13,7 @@ type Connection struct {
 	db *sqlx.DB
 }
 
-func NewConnection(cfg *configuration.Config) *Connection {
+func NewConnection(cfg *configuration.Env) *Connection {
 	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.PostgresUser,
 		cfg.PostgresPassword,
