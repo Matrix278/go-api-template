@@ -3,6 +3,9 @@ package random
 import (
 	"crypto/rand"
 	"encoding/hex"
+
+	"github.com/go-openapi/strfmt"
+	uuid "github.com/nu7hatch/gouuid"
 )
 
 func String(n int) string {
@@ -12,4 +15,13 @@ func String(n int) string {
 	}
 
 	return hex.EncodeToString(bytes)[:n]
+}
+
+func UUID4() strfmt.UUID4 {
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		return ""
+	}
+
+	return strfmt.UUID4(uuid.String())
 }
