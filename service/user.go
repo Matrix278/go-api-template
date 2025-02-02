@@ -1,7 +1,6 @@
 package service
 
 import (
-	"go-api-template/configuration"
 	"go-api-template/model"
 	"go-api-template/repository"
 	repositorymodel "go-api-template/repository/model"
@@ -16,16 +15,13 @@ type IUser interface {
 }
 
 type user struct {
-	cfg            *configuration.Env
 	userRepository repository.IUser
 }
 
 func NewUser(
-	cfg *configuration.Env,
 	userRepository repository.IUser,
 ) IUser {
 	return &user{
-		cfg:            cfg,
 		userRepository: userRepository,
 	}
 }

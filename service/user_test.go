@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"go-api-template/configuration"
 	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/random"
 	"go-api-template/repository"
@@ -18,7 +17,6 @@ type UserTestSuite struct {
 	suite.Suite
 
 	ctx                *gin.Context
-	cfg                *configuration.Env
 	service            IUser
 	userRepositoryMock *repository.UserMock
 	userID             strfmt.UUID4
@@ -32,7 +30,7 @@ func (suite *UserTestSuite) SetupSuite() {
 func (suite *UserTestSuite) SetupTest() {
 	suite.ctx, _ = gin.CreateTestContext(nil)
 	suite.userRepositoryMock = &repository.UserMock{}
-	suite.service = NewUser(suite.cfg, suite.userRepositoryMock)
+	suite.service = NewUser(suite.userRepositoryMock)
 	suite.userID = random.UUID4()
 	suite.failedError = errors.New("failed")
 }
