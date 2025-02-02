@@ -15,21 +15,21 @@ type IUser interface {
 	SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error)
 }
 
-type User struct {
+type user struct {
 	db *sqlx.DB
 }
 
 func NewUser(db *sqlx.DB) IUser {
-	return &User{
+	return &user{
 		db: db,
 	}
 }
 
-func (repository *User) Begin() (*sqlx.Tx, error) {
+func (repository *user) Begin() (*sqlx.Tx, error) {
 	return repository.db.Beginx()
 }
 
-func (repository *User) SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error) {
+func (repository *user) SelectUserByID(userID strfmt.UUID4) (*repositorymodel.User, error) {
 	var user repositorymodel.User
 
 	if err := repository.db.Get(&user, `
