@@ -5,9 +5,13 @@ services:
     image: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
@@ -29,3 +33,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    command: >
+      sh -c "
+        make migrate-up &&
+        go run main.go
+      "
