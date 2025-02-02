@@ -33,8 +33,3 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: >
-      sh -c "
-        make migrate-up &&
-        go run main.go
-      "
