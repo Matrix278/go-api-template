@@ -9,14 +9,16 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-type User struct {
+type IUser interface {
+	UserByID(ctx *gin.Context)
+}
+
+type user struct {
 	service service.IUser
 }
 
-func NewUser(
-	service service.IUser,
-) *User {
-	return &User{
+func NewUser(service service.IUser) IUser {
+	return &user{
 		service: service,
 	}
 }
@@ -34,7 +36,7 @@ func NewUser(
 //	@Failure		403		{object}	swagger.StatusForbidden
 //	@Failure		500		{object}	swagger.StatusInternalError
 //	@Router			/users/{user_id} [get]
-func (controller *User) UserByID(ctx *gin.Context) {
+func (controller *user) UserByID(ctx *gin.Context) {
 	// Validate path params
 	userID := ctx.Param("user_id")
 	if !strfmt.IsUUID4(userID) {
