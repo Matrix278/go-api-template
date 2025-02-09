@@ -89,6 +89,7 @@ func RequestsLogHandler() gin.HandlerFunc {
 		clientIP := context.ClientIP()
 		method := context.Request.Method
 		path := context.Request.URL.Path
+		queryParams := context.Request.URL.Query()
 		userAgent := context.Request.UserAgent()
 		referer := context.Request.Referer()
 		requestID := context.GetHeader("X-Request-ID")
@@ -120,6 +121,7 @@ func RequestsLogHandler() gin.HandlerFunc {
 			"body_size", bodySize,
 			"request_body", requestBodyMap,
 			"response_body", responseBodyMap,
+			"query_params", queryParams,
 			"path", path,
 			"user_agent", userAgent,
 			"referer", referer,
