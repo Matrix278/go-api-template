@@ -46,7 +46,7 @@ linters:
     - revive
     - staticcheck
     - stylecheck
-    - tenv
+    - usetesting
     - typecheck
     - unconvert
     - unparam
