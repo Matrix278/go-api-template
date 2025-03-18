@@ -6,7 +6,6 @@ import (
 	"go-api-template/pkg/logger"
 
 	"github.com/jmoiron/sqlx"
-
 	_ "github.com/lib/pq" // driver for PostgreSQL
 )
 

@@ -3,6 +3,9 @@ include .env
 run:
 	go run main.go
 
+test:
+	go test -v ./...
+
 mod-vendor:
 	go mod vendor
 

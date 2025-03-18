@@ -5,7 +5,7 @@ import (
 )
 
 type Controllers struct {
-	User *User
+	User IUser
 }
 
 func NewControllers(services *service.Services) *Controllers {

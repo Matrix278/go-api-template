@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"go-api-template/model/commonerrors"
 	"go-api-template/service"
 
@@ -9,14 +8,16 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-type User struct {
+type IUser interface {
+	UserByID(ctx *gin.Context)
+}
+
+type user struct {
 	service service.IUser
 }
 
-func NewUser(
-	service service.IUser,
-) *User {
-	return &User{
+func NewUser(service service.IUser) IUser {
+	return &user{
 		service: service,
 	}
 }
@@ -28,35 +29,25 @@ func NewUser(
 //	@Tags			User
 //	@Accept			json
 //	@Produce		json
-//	@Param			user_id	path		string					true	"User ID"
-//	@Success		200		{object}	model.UserByIDResponse	"Get user by ID"
-//	@Failure		400		{object}	swagger.StatusBadRequest
-//	@Failure		403		{object}	swagger.StatusForbidden
-//	@Failure		500		{object}	swagger.StatusInternalError
+//	@Param			user_id	path		string							true	"User ID"	format(uuid)
+//	@Success		200		{object}	model.UserByIDResponseSwagger	"Get user by ID"
+//	@Failure		400		{object}	model.BadRequestResponse
+//	@Failure		403		{object}	model.ForbiddenResponse
+//	@Failure		500		{object}	model.InternalErrorResponse
 //	@Router			/users/{user_id} [get]
-func (controller *User) UserByID(ctx *gin.Context) {
+func (controller *user) UserByID(ctx *gin.Context) {
 	// Validate path params
 	userID := ctx.Param("user_id")
 	if !strfmt.IsUUID4(userID) {
-		StatusBadRequest(ctx, errors.New("invalid user_id"))
+		StatusBadRequest(ctx, commonerrors.ErrInvalidUserID)
 		return
 	}
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
-		handleCommonErrors(ctx, err)
+		HandleCommonErrors(ctx, err)
 		return
 	}
 
 	StatusOKWithResponseModel(ctx, response)
-}
-
-// handleCommonErrors handles common errors and returns appropriate HTTP status codes
-func handleCommonErrors(ctx *gin.Context, err error) {
-	if _, ok := err.(*commonerrors.CommonError); ok {
-		StatusUnprocessableEntity(ctx, err)
-		return
-	}
-
-	StatusInternalServerError(ctx, err)
 }

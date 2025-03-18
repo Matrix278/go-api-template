@@ -1,5 +1,5 @@
-package swagger
+package model
 
-type StatusOK struct {
+type OKResponse struct {
 	Message string `json:"message" example:"Success"`
 }
