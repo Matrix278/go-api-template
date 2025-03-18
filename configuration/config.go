@@ -31,6 +31,8 @@ func Load() (*Env, error) {
 		}
 	}
 
+	viper.SetDefault("POSTGRES_SSL_MODE", "disable")
+
 	viper.AutomaticEnv()
 
 	allowedOrigins := viper.GetString("ALLOWED_ORIGINS")
