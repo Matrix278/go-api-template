@@ -35,6 +35,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "format": "uuid",
                         "description": "User ID",
                         "name": "user_id",
                         "in": "path",
@@ -45,25 +46,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Get user by ID",
                         "schema": {
-                            "$ref": "#/definitions/model.UserByIDResponse"
+                            "$ref": "#/definitions/model.UserByIDResponseSwagger"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusBadRequest"
+                            "$ref": "#/definitions/model.BadRequestResponse"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusForbidden"
+                            "$ref": "#/definitions/model.ForbiddenResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/swagger.StatusInternalError"
+                            "$ref": "#/definitions/model.InternalErrorResponse"
                         }
                     }
                 }
@@ -71,40 +72,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.User": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserByIDResponse": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/model.User"
-                }
-            }
-        },
-        "swagger.StatusBadRequest": {
+        "model.BadRequestResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "string",
                     "example": "BAD_REQUEST"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "string",
+                                "example": "name"
+                            },
+                            "message": {
+                                "type": "string",
+                                "example": "Name is required"
+                            }
+                        }
+                    }
                 },
                 "message": {
                     "type": "string",
@@ -112,7 +101,7 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StatusForbidden": {
+        "model.ForbiddenResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -125,7 +114,7 @@ const docTemplate = `{
                 }
             }
         },
-        "swagger.StatusInternalError": {
+        "model.InternalErrorResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -135,6 +124,39 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Internal server error"
+                }
+            }
+        },
+        "model.UserByIDResponseSwagger": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/model.UserSwagger"
+                }
+            }
+        },
+        "model.UserSwagger": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "JohnDoe"
                 }
             }
         }

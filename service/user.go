@@ -1,9 +1,9 @@
 package service
 
 import (
-	"go-api-template/configuration"
 	"go-api-template/model"
 	"go-api-template/repository"
+	repositorymodel "go-api-template/repository/model"
 	"go-api-template/service/mapper"
 
 	"github.com/gin-gonic/gin"
@@ -15,22 +15,23 @@ type IUser interface {
 }
 
 type user struct {
-	cfg            *configuration.Config
 	userRepository repository.IUser
 }
 
 func NewUser(
-	cfg *configuration.Config,
 	userRepository repository.IUser,
 ) IUser {
 	return &user{
-		cfg:            cfg,
 		userRepository: userRepository,
 	}
 }
 
 func (service *user) UserByID(_ *gin.Context, userID strfmt.UUID4) (*model.UserByIDResponse, error) {
-	user, err := service.userRepository.SelectUserByID(userID)
+	filter := repositorymodel.UsersFilter{
+		ID: &userID,
+	}
+
+	user, err := service.userRepository.SelectUserByFilter(filter)
 	if err != nil {
 		return nil, err
 	}

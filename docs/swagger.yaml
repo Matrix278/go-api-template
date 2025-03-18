@@ -1,33 +1,26 @@
 basePath: /api/v1
 definitions:
-  model.User:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: string
-      updated_at:
-        type: string
-      username:
-        type: string
-    type: object
-  model.UserByIDResponse:
-    properties:
-      user:
-        $ref: '#/definitions/model.User'
-    type: object
-  swagger.StatusBadRequest:
+  model.BadRequestResponse:
     properties:
       code:
         example: BAD_REQUEST
         type: string
+      errors:
+        items:
+          properties:
+            field:
+              example: name
+              type: string
+            message:
+              example: Name is required
+              type: string
+          type: object
+        type: array
       message:
         example: Bad request
         type: string
     type: object
-  swagger.StatusForbidden:
+  model.ForbiddenResponse:
     properties:
       code:
         example: FORBIDDEN
@@ -36,13 +29,36 @@ definitions:
         example: You don't have permission to access this resource
         type: string
     type: object
-  swagger.StatusInternalError:
+  model.InternalErrorResponse:
     properties:
       code:
         example: INTERNAL_ERROR
         type: string
       message:
         example: Internal server error
+        type: string
+    type: object
+  model.UserByIDResponseSwagger:
+    properties:
+      user:
+        $ref: '#/definitions/model.UserSwagger'
+    type: object
+  model.UserSwagger:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      email:
+        example: test@test.com
+        type: string
+      id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      username:
+        example: JohnDoe
         type: string
     type: object
 host: localhost:8080
@@ -62,6 +78,7 @@ paths:
       description: Get user by ID
       parameters:
       - description: User ID
+        format: uuid
         in: path
         name: user_id
         required: true
@@ -72,19 +89,19 @@ paths:
         "200":
           description: Get user by ID
           schema:
-            $ref: '#/definitions/model.UserByIDResponse'
+            $ref: '#/definitions/model.UserByIDResponseSwagger'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/swagger.StatusBadRequest'
+            $ref: '#/definitions/model.BadRequestResponse'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/swagger.StatusForbidden'
+            $ref: '#/definitions/model.ForbiddenResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/swagger.StatusInternalError'
+            $ref: '#/definitions/model.InternalErrorResponse'
       summary: Get user by ID
       tags:
       - User

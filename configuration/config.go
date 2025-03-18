@@ -1,11 +1,14 @@
 package configuration
 
 import (
+	"strings"
+
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
-type Config struct {
+type Env struct {
+	AppHost          string
 	AppPort          string
 	APIPath          string
 	AppEnv           string
@@ -14,10 +17,13 @@ type Config struct {
 	PostgresDB       string
 	PostgresUser     string
 	PostgresPassword string
+	AllowedOrigins   []string
 }
 
-func Load() (*Config, error) {
-	viper.SetConfigFile(".env")
+func Load() (*Env, error) {
+	if appName := viper.GetString("APP_ENV"); appName != "production" {
+		viper.SetConfigFile(".env")
+	}
 
 	if err := viper.ReadInConfig(); err == nil {
 		if err := godotenv.Load(); err != nil {
@@ -27,7 +33,11 @@ func Load() (*Config, error) {
 
 	viper.AutomaticEnv()
 
-	return &Config{
+	allowedOrigins := viper.GetString("ALLOWED_ORIGINS")
+	origins := strings.Split(allowedOrigins, ",")
+
+	return &Env{
+		AppHost:          viper.GetString("APP_HOST"),
 		AppPort:          viper.GetString("APP_PORT"),
 		APIPath:          viper.GetString("API_PATH"),
 		AppEnv:           viper.GetString("APP_ENV"),
@@ -36,5 +46,6 @@ func Load() (*Config, error) {
 		PostgresDB:       viper.GetString("POSTGRES_DB"),
 		PostgresUser:     viper.GetString("POSTGRES_USER"),
 		PostgresPassword: viper.GetString("POSTGRES_PASSWORD"),
+		AllowedOrigins:   origins,
 	}, nil
 }

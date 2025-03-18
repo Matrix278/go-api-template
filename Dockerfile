@@ -1,4 +1,4 @@
-FROM golang:1.23.0-bookworm AS builder
+FROM golang:1.23.5-bookworm AS builder
 
 ARG APP_PORT
 
@@ -11,13 +11,21 @@ RUN go mod download \
 
 FROM alpine:latest AS application
 
-# Install CA certificates
-RUN apk --no-cache add ca-certificates
+RUN apk add --no-cache git go \
+    && go install github.com/pressly/goose/v3/cmd/goose@latest
 
+WORKDIR /app
+
+# Copy compiled backend
 COPY --from=builder /app/go-backend ./go-backend
 COPY --from=builder /app/configuration/ ./configuration/
 COPY --from=builder /app/docs/ ./docs/
+COPY --from=builder /app/migrations/ ./migrations/
 
 EXPOSE ${APP_PORT}
 
-ENTRYPOINT ["./go-backend"]
+# Ensure goose is available in PATH
+ENV PATH="/root/go/bin:$PATH"
+
+# Run migrations before starting the app
+CMD ["sh", "-c", "goose -dir ./migrations postgres \"postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable\" up && ./go-backend"]
