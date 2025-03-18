@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go-api-template/model"
 	"go-api-template/model/commonerrors"
+	"go-api-template/model/swagger"
 	"go-api-template/pkg/random"
 	"go-api-template/service"
 	"net/http"
@@ -58,7 +59,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsBadRequest_InCaseOfUserIDIsNotV
 
 	// Assert
 	suite.Equal(http.StatusBadRequest, suite.responseRecorder.Code)
-	var actualResponse model.BadRequestResponse
+	var actualResponse swagger.BadRequestResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
 	suite.Equal(commonerrors.ErrInvalidUserID.Error(), actualResponse.Message)
@@ -79,7 +80,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUnprocessableEntity_InCaseOfUse
 
 	// Assert
 	suite.Equal(http.StatusUnprocessableEntity, suite.responseRecorder.Code)
-	var actualResponse model.UnprocessableEntityResponse
+	var actualResponse swagger.UnprocessableEntityResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
 	suite.Equal(commonerrors.ErrUserNotFound.Error(), actualResponse.Message)

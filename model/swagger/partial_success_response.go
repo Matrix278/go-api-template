@@ -1,4 +1,4 @@
-package model
+package swagger
 
 type PartialSuccessResponse struct {
 	Message string `json:"message" example:"Some of the requested operations were successful"`

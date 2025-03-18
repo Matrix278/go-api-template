@@ -1,4 +1,4 @@
-package model
+package swagger
 
 type BadRequestResponse struct {
 	Message string `json:"message" example:"Bad request"`

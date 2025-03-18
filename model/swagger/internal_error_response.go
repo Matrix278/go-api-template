@@ -1,4 +1,4 @@
-package model
+package swagger
 
 type InternalErrorResponse struct {
 	Message string `json:"message" example:"Internal server error"`

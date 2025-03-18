@@ -1,4 +1,4 @@
-package model
+package swagger
 
 type UnprocessableEntityResponse struct {
 	Message string `json:"message" example:"Posted data is not valid"`
