@@ -13,7 +13,7 @@ type Connection struct {
 	db *sqlx.DB
 }
 
-func NewConnection(cfg *configuration.Config) *Connection {
+func NewConnection(cfg *configuration.Env) *Connection {
 	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.PostgresUser,
 		cfg.PostgresPassword,
