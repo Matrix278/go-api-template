@@ -15,12 +15,13 @@ type Connection struct {
 }
 
 func NewConnection(cfg *configuration.Config) *Connection {
-	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.PostgresUser,
 		cfg.PostgresPassword,
 		cfg.PostgresHost,
 		cfg.PostgresPort,
 		cfg.PostgresDB,
+		cfg.PostgresSSLMode,
 	)
 
 	db, err := sqlx.Open("postgres", psqlURL)

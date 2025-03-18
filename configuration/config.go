@@ -14,6 +14,7 @@ type Config struct {
 	PostgresDB       string
 	PostgresUser     string
 	PostgresPassword string
+	PostgresSSLMode  string
 }
 
 func Load() (*Config, error) {
@@ -24,6 +25,8 @@ func Load() (*Config, error) {
 			return nil, err
 		}
 	}
+
+	viper.SetDefault("POSTGRES_SSL_MODE", "disable")
 
 	viper.AutomaticEnv()
 
@@ -36,5 +39,6 @@ func Load() (*Config, error) {
 		PostgresDB:       viper.GetString("POSTGRES_DB"),
 		PostgresUser:     viper.GetString("POSTGRES_USER"),
 		PostgresPassword: viper.GetString("POSTGRES_PASSWORD"),
+		PostgresSSLMode:  viper.GetString("POSTGRES_SSL_MODE"),
 	}, nil
 }
