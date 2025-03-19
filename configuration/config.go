@@ -17,6 +17,7 @@ type Env struct {
 	PostgresDB       string
 	PostgresUser     string
 	PostgresPassword string
+	PostgresSSLMode  string
 	AllowedOrigins   []string
 }
 
@@ -30,6 +31,8 @@ func Load() (*Env, error) {
 			return nil, err
 		}
 	}
+
+	viper.SetDefault("POSTGRES_SSL_MODE", "disable")
 
 	viper.AutomaticEnv()
 
@@ -46,6 +49,7 @@ func Load() (*Env, error) {
 		PostgresDB:       viper.GetString("POSTGRES_DB"),
 		PostgresUser:     viper.GetString("POSTGRES_USER"),
 		PostgresPassword: viper.GetString("POSTGRES_PASSWORD"),
+		PostgresSSLMode:  viper.GetString("POSTGRES_SSL_MODE"),
 		AllowedOrigins:   origins,
 	}, nil
 }
