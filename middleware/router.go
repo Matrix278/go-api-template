@@ -7,6 +7,7 @@ import (
 	"go-api-template/pkg/logger"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gin.Engine, error) {
@@ -15,6 +16,7 @@ func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gi
 	}
 
 	router := gin.Default()
+	router.Use(otelgin.Middleware(cfg.Telemetry.ServiceName))
 
 	// Initialize middlewares
 	middleware := NewMiddlewares(cfg)

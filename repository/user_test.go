@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"go-api-template/model/commonerrors"
@@ -78,7 +79,7 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsError_InCaseOfSelectF
 	suite.dbMock.ExpectQuery("SELECT").WillReturnError(errors.New("failed"))
 
 	// Act
-	_, err := suite.repository.SelectUserByFilter(usersFilter)
+	_, err := suite.repository.SelectUserByFilter(context.Background(), usersFilter)
 
 	// Assert
 	suite.Error(err)
@@ -93,7 +94,7 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsError_InCaseOfUserNot
 	suite.dbMock.ExpectQuery("SELECT").WillReturnError(sql.ErrNoRows)
 
 	// Act
-	_, err := suite.repository.SelectUserByFilter(usersFilter)
+	_, err := suite.repository.SelectUserByFilter(context.Background(), usersFilter)
 
 	// Assert
 	suite.Error(err)
@@ -107,11 +108,10 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsUser_InCaseOfSuccess(
 	}
 
 	rows := sqlmock.NewRows([]string{"id"}).AddRow(string(suite.userID))
-
 	suite.dbMock.ExpectQuery("SELECT").WillReturnRows(rows)
 
 	// Act
-	user, err := suite.repository.SelectUserByFilter(usersFilter)
+	user, err := suite.repository.SelectUserByFilter(context.Background(), usersFilter)
 
 	// Assert
 	suite.NoError(err)

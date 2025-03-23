@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IUser interface {
@@ -14,11 +16,13 @@ type IUser interface {
 
 type user struct {
 	service service.IUser
+	tracer  trace.Tracer
 }
 
 func NewUser(service service.IUser) IUser {
 	return &user{
 		service: service,
+		tracer:  otel.Tracer("controller/user"),
 	}
 }
 
@@ -36,15 +40,19 @@ func NewUser(service service.IUser) IUser {
 //	@Failure		500		{object}	model.InternalErrorResponse
 //	@Router			/users/{user_id} [get]
 func (controller *user) UserByID(ctx *gin.Context) {
-	// Validate path params
+	spanCtx, span := controller.tracer.Start(ctx.Request.Context(), "UserByID")
+	defer span.End()
+
 	userID := ctx.Param("user_id")
 	if !strfmt.IsUUID4(userID) {
+		span.RecordError(commonerrors.ErrInvalidUserID)
 		StatusBadRequest(ctx, commonerrors.ErrInvalidUserID)
 		return
 	}
 
-	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
+	response, err := controller.service.UserByID(spanCtx, strfmt.UUID4(userID))
 	if err != nil {
+		span.RecordError(err)
 		HandleCommonErrors(ctx, err)
 		return
 	}

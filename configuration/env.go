@@ -19,6 +19,7 @@ type Env struct {
 	PostgresPassword string
 	PostgresSSLMode  string
 	AllowedOrigins   []string
+	Telemetry        *Telemetry
 }
 
 func Load() (*Env, error) {
@@ -51,5 +52,6 @@ func Load() (*Env, error) {
 		PostgresPassword: viper.GetString("POSTGRES_PASSWORD"),
 		PostgresSSLMode:  viper.GetString("POSTGRES_SSL_MODE"),
 		AllowedOrigins:   origins,
+		Telemetry:        TelemetryNew(),
 	}, nil
 }
