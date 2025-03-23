@@ -3,7 +3,6 @@ package telemetry
 import (
 	"context"
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"go-api-template/configuration"
 	"go-api-template/pkg/logger"
@@ -22,7 +21,7 @@ import (
 
 func InitTracer(cfg *configuration.Telemetry) func() {
 	ctx := context.Background()
-	shutdown, err := setupOTelSDK(ctx, cfg)
+	shutdown, err := newOtelCollector(ctx, cfg)
 	if err != nil {
 		logger.Fatalf("failed to setup OpenTelemetry: %v", err)
 	}
@@ -35,21 +34,14 @@ func InitTracer(cfg *configuration.Telemetry) func() {
 	}
 }
 
-func setupOTelSDK(ctx context.Context, cfg *configuration.Telemetry) (func(context.Context) error, error) {
-	var shutdownFuncs []func(context.Context) error
+func newOtelCollector(ctx context.Context, cfg *configuration.Telemetry) (func(context.Context) error, error) {
+	// Cleanup functions which need to be executed when the OpenTelemetry SDK is shutting down.
+	// When shutdown is called (typically when application is terminating),
+	// it executes all these cleanup functions in order and combines their errors
+	shutdownHandler := NewShutdownHandler()
 
-	// Create shutdown function
-	shutdown := func(ctx context.Context) error {
-		var err error
-		for _, fn := range shutdownFuncs {
-			err = errors.Join(err, fn(ctx))
-		}
-		shutdownFuncs = nil
-		return err
-	}
-
-	// Create resource
-	res, err := resource.New(ctx,
+	// Setup OpenTelemetry SDK
+	resources, err := resource.New(ctx,
 		resource.WithFromEnv(),
 		resource.WithSchemaURL(semconv.SchemaURL),
 		resource.WithAttributes(
@@ -59,10 +51,10 @@ func setupOTelSDK(ctx context.Context, cfg *configuration.Telemetry) (func(conte
 		),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create resource: %w", err)
+		return nil, fmt.Errorf("failed to create Otel SDK resource: %w", err)
 	}
 
-	// Configure OTLP exporter
+	// Configure OTEL Exporter
 	opts := []otlptracegrpc.Option{
 		otlptracegrpc.WithEndpoint(cfg.Endpoint),
 		otlptracegrpc.WithHeaders(cfg.Headers),
@@ -70,7 +62,7 @@ func setupOTelSDK(ctx context.Context, cfg *configuration.Telemetry) (func(conte
 			MinVersion: tls.VersionTLS12,
 		})),
 		otlptracegrpc.WithTimeout(30 * time.Second),
-		otlptracegrpc.WithCompressor("gzip"),
+		otlptracegrpc.WithCompressor(cfg.Compression),
 	}
 
 	client := otlptracegrpc.NewClient(opts...)
@@ -80,19 +72,18 @@ func setupOTelSDK(ctx context.Context, cfg *configuration.Telemetry) (func(conte
 	}
 
 	// Create BatchSpanProcessor
-	bsp := sdktrace.NewBatchSpanProcessor(traceExporter,
-		sdktrace.WithMaxQueueSize(2048),
+	batchSpanProcessor := sdktrace.NewBatchSpanProcessor(traceExporter,
+		sdktrace.WithMaxQueueSize(cfg.QueueSize),
 		sdktrace.WithBatchTimeout(2*time.Second),
-		sdktrace.WithMaxExportBatchSize(512),
+		sdktrace.WithMaxExportBatchSize(cfg.MaxExportBatchSize),
 	)
 
-	// Create TracerProvider
 	tracerProvider := sdktrace.NewTracerProvider(
-		sdktrace.WithResource(res),
-		sdktrace.WithSpanProcessor(bsp),
+		sdktrace.WithResource(resources),
+		sdktrace.WithSpanProcessor(batchSpanProcessor),
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 	)
-	shutdownFuncs = append(shutdownFuncs, tracerProvider.Shutdown)
+	shutdownHandler.AddFunction(tracerProvider.Shutdown)
 
 	// Set global TracerProvider
 	otel.SetTracerProvider(tracerProvider)
@@ -109,5 +100,5 @@ func setupOTelSDK(ctx context.Context, cfg *configuration.Telemetry) (func(conte
 	}
 
 	logger.Infof("Successfully initialized OpenTelemetry")
-	return shutdown, nil
+	return shutdownHandler.Shutdown, nil
 }
