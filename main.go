@@ -58,14 +58,16 @@ func main() {
 	controllers := controller.NewControllers(services)
 
 	// Initialize OpenTelemetry
-	otel := configuration.TelemetryNew()
-	otel.ServiceName = cfg.Telemetry.ServiceName
-	otel.Environment = cfg.Telemetry.Environment
-	otel.Endpoint = cfg.Telemetry.Endpoint
-	otel.Headers = cfg.Telemetry.Headers
+	if cfg.Telemetry.Enabled {
+		otel := configuration.TelemetryNew()
+		otel.ServiceName = cfg.Telemetry.ServiceName
+		otel.Environment = cfg.Telemetry.Environment
+		otel.Endpoint = cfg.Telemetry.Endpoint
+		otel.Headers = cfg.Telemetry.Headers
 
-	cleanup := telemetry.InitTracer(otel)
-	defer cleanup()
+		cleanup := telemetry.InitTracer(otel)
+		defer cleanup()
+	}
 
 	// Initialize router
 	router, err := middleware.NewRouter(cfg, controllers)

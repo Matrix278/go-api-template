@@ -16,7 +16,9 @@ func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gi
 	}
 
 	router := gin.Default()
-	router.Use(otelgin.Middleware(cfg.Telemetry.ServiceName))
+	if cfg.Telemetry.Enabled {
+		router.Use(otelgin.Middleware(cfg.Telemetry.ServiceName))
+	}
 
 	// Initialize middlewares
 	middleware := NewMiddlewares(cfg)
