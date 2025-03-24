@@ -9,6 +9,7 @@ This is a template for a Go API project. It includes the following features:
 - API Security
 - API Logging
 - API Testing
+- Platform agnostic OpenTelemetry
 
 ## Requirements
 
