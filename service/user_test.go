@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/random"
 	"go-api-template/repository"
@@ -32,7 +31,7 @@ func (suite *UserTestSuite) SetupTest() {
 	suite.userRepositoryMock = &repository.UserMock{}
 	suite.service = NewUser(suite.userRepositoryMock)
 	suite.userID = random.UUID4()
-	suite.failedError = errors.New("failed")
+	suite.failedError = commonerrors.ErrFailed
 }
 
 func (suite *UserTestSuite) TearDownTest() {
@@ -40,6 +39,7 @@ func (suite *UserTestSuite) TearDownTest() {
 }
 
 func Test_User_TestSuite(t *testing.T) {
+	t.Parallel() // Enable parallel execution
 	suite.Run(t, &UserTestSuite{})
 }
 
@@ -58,7 +58,8 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfSelectUserByFilte
 	response, err := suite.service.UserByID(suite.ctx, suite.userID)
 
 	// Assert
-	suite.Nil(response)
+	suite.Require().Nil(response)
+
 	if suite.Error(err) {
 		suite.Equal(suite.failedError, err)
 	}
@@ -79,7 +80,8 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfUserNotFound() {
 	response, err := suite.service.UserByID(suite.ctx, suite.userID)
 
 	// Assert
-	suite.Nil(response)
+	suite.Require().Nil(response)
+
 	if suite.Error(err) {
 		suite.Equal(commonerrors.ErrUserNotFound, err)
 	}
@@ -104,7 +106,8 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUser_InCaseOfSuccess() {
 	response, err := suite.service.UserByID(suite.ctx, suite.userID)
 
 	// Assert
-	suite.Nil(err)
+	suite.Require().NoError(err)
+
 	if suite.NotNil(response) {
 		suite.Equal(user.ID, response.User.ID)
 	}

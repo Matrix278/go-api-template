@@ -23,6 +23,7 @@ type responseWriter struct {
 
 func (response *responseWriter) Write(body []byte) (int, error) {
 	response.body.Write(body)
+
 	return response.ResponseWriter.Write(body)
 }
 

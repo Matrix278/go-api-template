@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"fmt"
 	"go-api-template/configuration"
 	"go-api-template/controller"
+	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -32,13 +32,14 @@ func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gi
 	return router, nil
 }
 
-// private
+// private.
 func authorizationHeaderRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
 		if token == "" {
-			controller.StatusUnauthorized(ctx, fmt.Errorf("authorization header required"))
+			controller.StatusUnauthorized(ctx, commonerrors.ErrAuthorizationHeaderRequired)
 			ctx.Abort()
+
 			return
 		}
 

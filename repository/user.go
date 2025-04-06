@@ -31,6 +31,7 @@ func (repository *user) Begin() (*sqlx.Tx, error) {
 
 func (repository *user) SelectUserByFilter(filter repositorymodel.UsersFilter) (*repositorymodel.User, error) {
 	var user repositorymodel.User
+
 	whereCondition, args := buildUsersWhereCondition(filter)
 
 	query := `
@@ -56,6 +57,7 @@ func (repository *user) SelectUserByFilter(filter repositorymodel.UsersFilter) (
 
 func buildUsersWhereCondition(filter repositorymodel.UsersFilter) (string, []interface{}) {
 	var conditions []string
+
 	var args []interface{}
 
 	if filter.ID != nil {

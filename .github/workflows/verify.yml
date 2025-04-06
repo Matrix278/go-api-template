@@ -27,20 +27,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23.5"
+          go-version: stable
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: v1.63.4
-          working-directory: ./
-          only-new-issues: false
-          args: --concurrency=16 --timeout=5m --out-format=github-actions --issues-exit-code=1
-          skip-cache: false
-          skip-pkg-cache: true
+          version: latest
+
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: Run gosec
+        run: gosec ./...
 
   # Add Golang Tests when they will be available
   verify_backend_functionality:
@@ -48,10 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23.5"
+          go-version: stable
 
   publish_release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')

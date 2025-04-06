@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"errors"
 	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/random"
 	"go-api-template/repository/model"
@@ -35,26 +34,29 @@ func (suite *UserTestSuite) SetupTest() {
 	suite.db = sqlx.NewDb(db, "sqlmock")
 	suite.repository = NewUser(suite.db)
 	suite.userID = random.UUID4()
-	suite.failedError = errors.New("failed")
+	suite.failedError = commonerrors.ErrFailed
 }
 
 func (suite *UserTestSuite) TearDownTest() {
-	suite.db.Close()
+	if err := suite.db.Close(); err != nil {
+		suite.T().Errorf("closing database connection failed. %v", err)
+	}
 }
 
 func Test_User_TestSuite(t *testing.T) {
+	t.Parallel() // Enable parallel execution
 	suite.Run(t, &UserTestSuite{})
 }
 
 func (suite *UserTestSuite) Test_Begin_ReturnsError_InCaseOfBeginFailed() {
 	// Arrange
-	suite.dbMock.ExpectBegin().WillReturnError(errors.New("failed"))
+	suite.dbMock.ExpectBegin().WillReturnError(suite.failedError)
 
 	// Act
 	_, err := suite.repository.Begin()
 
 	// Assert
-	suite.Error(err)
+	suite.Require().Error(err)
 }
 
 func (suite *UserTestSuite) Test_Begin_ReturnsTransaction_InCaseOfSuccess() {
@@ -65,7 +67,7 @@ func (suite *UserTestSuite) Test_Begin_ReturnsTransaction_InCaseOfSuccess() {
 	tx, err := suite.repository.Begin()
 
 	// Assert
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(tx)
 }
 
@@ -75,13 +77,13 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsError_InCaseOfSelectF
 		ID: &suite.userID,
 	}
 
-	suite.dbMock.ExpectQuery("SELECT").WillReturnError(errors.New("failed"))
+	suite.dbMock.ExpectQuery("SELECT").WillReturnError(suite.failedError)
 
 	// Act
 	_, err := suite.repository.SelectUserByFilter(usersFilter)
 
 	// Assert
-	suite.Error(err)
+	suite.Require().Error(err)
 }
 
 func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsError_InCaseOfUserNotFound() {
@@ -96,7 +98,7 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsError_InCaseOfUserNot
 	_, err := suite.repository.SelectUserByFilter(usersFilter)
 
 	// Assert
-	suite.Error(err)
+	suite.Require().Error(err)
 	suite.Equal(commonerrors.ErrUserNotFound, err)
 }
 
@@ -114,7 +116,7 @@ func (suite *UserTestSuite) Test_SelectUserByFilter_ReturnsUser_InCaseOfSuccess(
 	user, err := suite.repository.SelectUserByFilter(usersFilter)
 
 	// Assert
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(user)
 	suite.Equal(suite.userID, user.ID)
 }

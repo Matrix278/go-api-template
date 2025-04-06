@@ -1,5 +1,5 @@
 package model
 
 type OKResponse struct {
-	Message string `json:"message" example:"Success"`
+	Message string `example:"Success" json:"message"`
 }

@@ -1,3 +1,5 @@
+version: "2"
+
 run:
   # Default concurrency is an available CPU number
   concurrency: 4
@@ -8,51 +10,132 @@ run:
   # Include test files or not, default is true
   tests: true
 
-# Settings of specific linters
-linters-settings:
-  gocyclo:
-    min-complexity: 20
-
 linters:
-  # do not use `enable-all`: it's deprecated and will be removed soon.
-  disable-all: true
+  # Default set of linters.
+  # The value can be: `standard`, `all`, `none`, or `fast`.
+  # Default: standard
+  default: all
+
+  # Enable specific linter.
+  # https://golangci-lint.run/usage/linters/#enabled-by-default
   enable:
     - asasalint
     - asciicheck
     - bidichk
     - bodyclose
+    - canonicalheader
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
     - dogsled
+    - dupl
+    - dupword
     - durationcheck
+    - err113
     - errcheck
     - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exhaustruct
+    - exptostd
+    - fatcontext
     - forbidigo
+    - forcetypeassert
+    - funlen
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gochecksumtype
     - gocognit
+    - goconst
     - gocritic
+    - gocyclo
+    - godot
     - godox
-    - gofmt
-    - gofumpt
-    - goimports
+    - goheader
+    - gomoddirectives
+    - gomodguard
     - goprintffuncname
-    - gosimple
+    - gosec
+    - gosmopolitan
     - govet
+    - grouper
+    - iface
+    - importas
+    - inamedparam
     - ineffassign
+    - interfacebloat
+    - intrange
+    - ireturn
+    - lll
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
     - misspell
+    - mnd
+    - musttag
     - nakedret
     - nestif
     - nilerr
+    - nilnesserr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
     - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - perfsprint
     - prealloc
     - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
     - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
     - staticcheck
-    - stylecheck
-    - usetesting
-    - typecheck
+    - tagalign
+    - tagliatelle
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
     - unconvert
     - unparam
     - unused
     - usestdlibvars
+    - usetesting
+    - varnamelen
+    - wastedassign
     - whitespace
+    - wrapcheck
+    - wsl
+    - zerologlint
+
+  disable:
+    - lll
+    - depguard
+    - revive
+    - wrapcheck
+    - tagliatelle
+    - exhaustruct
+    - testpackage
+    - mnd
+    - gochecknoinits
+    - gochecknoglobals
+    - forcetypeassert
+    - ireturn
 
 issues:
   max-same-issues: 0
