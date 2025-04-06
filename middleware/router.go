@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"errors"
 	"go-api-template/configuration"
 	"go-api-template/controller"
 	"go-api-template/pkg/logger"

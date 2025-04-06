@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"go-api-template/configuration"
 	"go-api-template/controller"
 	"go-api-template/middleware"

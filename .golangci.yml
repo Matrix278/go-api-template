@@ -123,5 +123,10 @@ linters:
     - wsl
     - zerologlint
 
+  disable:
+    - lll
+    - depguard
+    - revive
+
 issues:
   max-same-issues: 0
