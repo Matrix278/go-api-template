@@ -127,6 +127,15 @@ linters:
     - lll
     - depguard
     - revive
+    - wrapcheck
+    - tagliatelle
+    - exhaustruct
+    - testpackage
+    - mnd
+    - gochecknoinits
+    - gochecknoglobals
+    - forcetypeassert
+    - ireturn
 
 issues:
   max-same-issues: 0

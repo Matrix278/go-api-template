@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"go-api-template/model"
 	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/json"
@@ -105,7 +106,8 @@ func StatusForbidden(ctx *gin.Context, message string) {
 
 // handleCommonErrors handles common errors and returns appropriate HTTP status codes.
 func HandleCommonErrors(ctx *gin.Context, err error) {
-	if _, ok := err.(*commonerrors.CommonError); ok {
+	var commonErr *commonerrors.CommonError
+	if errors.As(err, &commonErr) {
 		StatusUnprocessableEntity(ctx, err)
 
 		return

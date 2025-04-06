@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"errors"
 	"go-api-template/configuration"
 	"go-api-template/controller"
+	"go-api-template/model/commonerrors"
 	"go-api-template/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +37,7 @@ func authorizationHeaderRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
 		if token == "" {
-			controller.StatusUnauthorized(ctx, errors.New("authorization header required"))
+			controller.StatusUnauthorized(ctx, commonerrors.ErrAuthorizationHeaderRequired)
 			ctx.Abort()
 
 			return

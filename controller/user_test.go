@@ -43,6 +43,7 @@ func (suite *UserTestSuite) TearDownTest() {
 }
 
 func Test_User_TestSuite(t *testing.T) {
+	t.Parallel() // Enable parallel execution
 	suite.Run(t, &UserTestSuite{})
 }
 
@@ -57,11 +58,11 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsBadRequest_InCaseOfUserIDIsNotV
 	suite.controller.UserByID(suite.ctx)
 
 	// Assert
-	suite.Equal(http.StatusBadRequest, suite.responseRecorder.Code)
+	suite.Require().Equal(http.StatusBadRequest, suite.responseRecorder.Code)
 
 	var actualResponse model.BadRequestResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Equal(commonerrors.ErrInvalidUserID.Error(), actualResponse.Message)
 }
 
@@ -79,11 +80,11 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUnprocessableEntity_InCaseOfUse
 	suite.controller.UserByID(suite.ctx)
 
 	// Assert
-	suite.Equal(http.StatusUnprocessableEntity, suite.responseRecorder.Code)
+	suite.Require().Equal(http.StatusUnprocessableEntity, suite.responseRecorder.Code)
 
 	var actualResponse model.UnprocessableEntityResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Equal(commonerrors.ErrUserNotFound.Error(), actualResponse.Message)
 }
 
@@ -107,10 +108,10 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsResponse_InCaseOfSuccess() {
 	suite.controller.UserByID(suite.ctx)
 
 	// Assert
-	suite.Equal(http.StatusOK, suite.responseRecorder.Code)
+	suite.Require().Equal(http.StatusOK, suite.responseRecorder.Code)
 
 	var actualResponse model.UserByIDResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Equal(expectedResponse, &actualResponse)
 }
