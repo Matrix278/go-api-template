@@ -38,7 +38,7 @@ jobs:
           version: v2.0.2
           working-directory: ./
           only-new-issues: false
-          args: --concurrency=16 --timeout=5m --out-format=github-actions --issues-exit-code=1
+          args: --concurrency=16 --timeout=5m --format=github-actions --issues-exit-code=1
           skip-cache: false
           skip-pkg-cache: true
 
