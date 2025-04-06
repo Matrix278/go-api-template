@@ -10,6 +10,7 @@ func Encode(input interface{}) ([]byte, error) {
 	bodyBytes, err := json.Marshal(input)
 	if err != nil {
 		logger.Errorf("unable to marshal data: %v", err)
+
 		return nil, err
 	}
 
@@ -19,6 +20,7 @@ func Encode(input interface{}) ([]byte, error) {
 func Decode(input []byte, output interface{}) error {
 	if err := json.Unmarshal(input, output); err != nil {
 		logger.Errorf("unable to unmarshal data: %v", err)
+
 		return err
 	}
 

@@ -1,6 +1,6 @@
 package model
 
 type UnprocessableEntityResponse struct {
-	Message string `json:"message" example:"Posted data is not valid"`
-	Code    string `json:"code" example:"UNPROCESSABLE_ENTITY"`
+	Message string `example:"Posted data is not valid" json:"message"`
+	Code    string `example:"UNPROCESSABLE_ENTITY"     json:"code"`
 }

@@ -59,6 +59,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfSelectUserByFilte
 
 	// Assert
 	suite.Nil(response)
+
 	if suite.Error(err) {
 		suite.Equal(suite.failedError, err)
 	}
@@ -80,6 +81,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfUserNotFound() {
 
 	// Assert
 	suite.Nil(response)
+
 	if suite.Error(err) {
 		suite.Equal(commonerrors.ErrUserNotFound, err)
 	}
@@ -104,7 +106,8 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUser_InCaseOfSuccess() {
 	response, err := suite.service.UserByID(suite.ctx, suite.userID)
 
 	// Assert
-	suite.Nil(err)
+	suite.NoError(err)
+
 	if suite.NotNil(response) {
 		suite.Equal(user.ID, response.User.ID)
 	}

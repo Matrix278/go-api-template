@@ -22,6 +22,7 @@ type ValidationErrorDetails struct {
 
 func (validErr ValidationError) Error() string {
 	bytes, _ := json.Encode(validErr)
+
 	return string(bytes)
 }
 
@@ -60,10 +61,11 @@ func appendValidationErrors(typedError validator.ValidationErrors, details []Val
 }
 
 func parseFieldError(fieldError validator.FieldError) string {
-	fieldPrefix := fmt.Sprintf("the field %s", toSnakeCase(fieldError.Field()))
+	fieldPrefix := "the field " + toSnakeCase(fieldError.Field())
+
 	switch fieldError.Tag() {
 	case "required":
-		return fmt.Sprintf("%s is required", fieldPrefix)
+		return fieldPrefix + " is required"
 	case "min":
 		return fmt.Sprintf("%s should have at least %s elements", fieldPrefix, fieldError.Param())
 	case "max":
@@ -71,12 +73,12 @@ func parseFieldError(fieldError validator.FieldError) string {
 	case "len":
 		return fmt.Sprintf("%s should have a length of %s", fieldPrefix, fieldError.Param())
 	case "phoneNumber":
-		return fmt.Sprintf("%s should be a valid phone number", fieldPrefix)
+		return fieldPrefix + " should be a valid phone number"
 	case "latLong":
-		return fmt.Sprintf("%s should be a valid latitude and longitude", fieldPrefix)
+		return fieldPrefix + " should be a valid latitude and longitude"
 
 	default:
-		return fmt.Errorf("%v", fieldError).Error()
+		return fmt.Errorf("%w", fieldError).Error()
 	}
 }
 
@@ -87,5 +89,6 @@ func parseMarshallingError(unmarshalTypeError goccy.UnmarshalTypeError) string {
 func toSnakeCase(str string) string {
 	re := regexp.MustCompile("([a-z0-9])([A-Z])")
 	snake := re.ReplaceAllString(str, "${1}_${2}")
+
 	return strings.ToLower(snake)
 }

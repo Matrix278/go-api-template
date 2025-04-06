@@ -58,6 +58,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsBadRequest_InCaseOfUserIDIsNotV
 
 	// Assert
 	suite.Equal(http.StatusBadRequest, suite.responseRecorder.Code)
+
 	var actualResponse model.BadRequestResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
@@ -79,6 +80,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUnprocessableEntity_InCaseOfUse
 
 	// Assert
 	suite.Equal(http.StatusUnprocessableEntity, suite.responseRecorder.Code)
+
 	var actualResponse model.UnprocessableEntityResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)
@@ -106,6 +108,7 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsResponse_InCaseOfSuccess() {
 
 	// Assert
 	suite.Equal(http.StatusOK, suite.responseRecorder.Code)
+
 	var actualResponse model.UserByIDResponse
 	err := json.NewDecoder(suite.responseRecorder.Body).Decode(&actualResponse)
 	suite.NoError(err)

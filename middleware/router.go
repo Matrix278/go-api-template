@@ -32,13 +32,14 @@ func NewRouter(cfg *configuration.Env, controllers *controller.Controllers) (*gi
 	return router, nil
 }
 
-// private
+// private.
 func authorizationHeaderRequired() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.GetHeader("Authorization")
 		if token == "" {
-			controller.StatusUnauthorized(ctx, fmt.Errorf("authorization header required"))
+			controller.StatusUnauthorized(ctx, errors.New("authorization header required"))
 			ctx.Abort()
+
 			return
 		}
 

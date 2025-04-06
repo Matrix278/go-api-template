@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID        strfmt.UUID4 `json:"id" swaggerignore:"true"`
+	ID        strfmt.UUID4 `json:"id"         swaggerignore:"true"`
 	Username  string       `json:"username"`
 	Email     string       `json:"email"`
 	CreatedAt time.Time    `json:"created_at"`
