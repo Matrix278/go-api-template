@@ -37,10 +37,11 @@ func InitValidation() error {
 	return nil
 }
 
-// private
+// private.
 func registerValidation(validate *validator.Validate, validationType string, validationFunc validator.Func) error {
 	if err := validate.RegisterValidation(validationType, validationFunc); err != nil {
 		logger.Errorf("error registering %s validation: %v", validationType, err)
+
 		return err
 	}
 
@@ -49,6 +50,7 @@ func registerValidation(validate *validator.Validate, validationType string, val
 
 func validateDatetime(fl validator.FieldLevel) bool {
 	_, err := time.Parse("2006-01-02", fl.Field().String())
+
 	return err == nil
 }
 

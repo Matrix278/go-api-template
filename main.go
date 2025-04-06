@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"go-api-template/configuration"
 	"go-api-template/controller"
 	"go-api-template/middleware"
@@ -22,12 +23,7 @@ import (
 //	@version		1.0
 //	@description	GO API documentation
 
-// @contact.name				API Support
-// @contact.url				https://example.com/
-// @contact.email				support@gmail.com
-// @host						localhost:8080
-// @BasePath					/api/v1
-// @securityDefinitions.basic	BasicAuth
+// @securityDefinitions.basic	BasicAuth.
 func main() {
 	// Initialize the logger
 	logger.InitLogger()
@@ -71,7 +67,8 @@ func main() {
 
 	go func() {
 		logger.Infof("Listening server on port %s...", cfg.AppPort)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Fatalf("Server failed to start: %v", err)
 		}
 	}()

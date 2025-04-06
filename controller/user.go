@@ -40,12 +40,14 @@ func (controller *user) UserByID(ctx *gin.Context) {
 	userID := ctx.Param("user_id")
 	if !strfmt.IsUUID4(userID) {
 		StatusBadRequest(ctx, commonerrors.ErrInvalidUserID)
+
 		return
 	}
 
 	response, err := controller.service.UserByID(ctx, strfmt.UUID4(userID))
 	if err != nil {
 		HandleCommonErrors(ctx, err)
+
 		return
 	}
 

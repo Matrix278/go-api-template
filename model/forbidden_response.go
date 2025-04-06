@@ -1,6 +1,6 @@
 package model
 
 type ForbiddenResponse struct {
-	Message string `json:"message" example:"You don't have permission to access this resource"`
-	Code    string `json:"code" example:"FORBIDDEN"`
+	Message string `example:"You don't have permission to access this resource" json:"message"`
+	Code    string `example:"FORBIDDEN"                                         json:"code"`
 }

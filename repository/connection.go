@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-api-template/configuration"
 	"go-api-template/pkg/logger"
+	"net"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // driver for PostgreSQL
@@ -14,28 +15,28 @@ type Connection struct {
 }
 
 func NewConnection(cfg *configuration.Env) *Connection {
-	psqlURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+	hostPort := net.JoinHostPort(cfg.PostgresHost, cfg.PostgresPort)
+	psqlURL := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
 		cfg.PostgresUser,
 		cfg.PostgresPassword,
-		cfg.PostgresHost,
-		cfg.PostgresPort,
+		hostPort,
 		cfg.PostgresDB,
 		cfg.PostgresSSLMode,
 	)
 
-	db, err := sqlx.Open("postgres", psqlURL)
+	database, err := sqlx.Open("postgres", psqlURL)
 	if err != nil {
 		logger.Fatalf("connecting to database failed. %v", err)
 	}
 
-	if err = db.Ping(); err != nil {
+	if err = database.Ping(); err != nil {
 		logger.Fatalf("connecting to database failed. %v", err)
 	}
 
 	logger.Infof("database connection established")
 
 	return &Connection{
-		db: db,
+		db: database,
 	}
 }
 

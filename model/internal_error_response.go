@@ -1,6 +1,6 @@
 package model
 
 type InternalErrorResponse struct {
-	Message string `json:"message" example:"Internal server error"`
-	Code    string `json:"code" example:"INTERNAL_ERROR"`
+	Message string `example:"Internal server error" json:"message"`
+	Code    string `example:"INTERNAL_ERROR"        json:"code"`
 }
