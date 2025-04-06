@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"go-api-template/model/commonerrors"
 	repositorymodel "go-api-template/repository/model"
@@ -8,20 +9,25 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type IUser interface {
 	Begin() (*sqlx.Tx, error)
-	SelectUserByFilter(filter repositorymodel.UsersFilter) (*repositorymodel.User, error)
+	SelectUserByFilter(ctx context.Context, filter repositorymodel.UsersFilter) (*repositorymodel.User, error)
 }
 
 type user struct {
-	db *sqlx.DB
+	db     *sqlx.DB
+	tracer trace.Tracer
 }
 
 func NewUser(db *sqlx.DB) IUser {
 	return &user{
-		db: db,
+		db:     db,
+		tracer: otel.Tracer("repository/user"),
 	}
 }
 
@@ -29,25 +35,28 @@ func (repository *user) Begin() (*sqlx.Tx, error) {
 	return repository.db.Beginx()
 }
 
-func (repository *user) SelectUserByFilter(filter repositorymodel.UsersFilter) (*repositorymodel.User, error) {
+func (repository *user) SelectUserByFilter(ctx context.Context, filter repositorymodel.UsersFilter) (*repositorymodel.User, error) {
+	ctx, span := repository.tracer.Start(ctx, "SelectUserByFilter")
+	defer span.End()
+
 	var user repositorymodel.User
 	whereCondition, args := buildUsersWhereCondition(filter)
 
-	query := `
-        SELECT
-            *
-        FROM
-            users
-    `
+	query := `SELECT * FROM users`
 	if whereCondition != "" {
 		query += " WHERE " + whereCondition
 	}
 
-	if err := repository.db.Get(&user, query, args...); err != nil {
+	span.SetAttributes(
+		attribute.String("db.statement", query),
+		attribute.String("db.system", "postgresql"),
+	)
+
+	if err := repository.db.GetContext(ctx, &user, query, args...); err != nil {
+		span.RecordError(err)
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, commonerrors.ErrUserNotFound
 		}
-
 		return nil, errors.Wrap(err, "selecting user by filter failed")
 	}
 

@@ -1,12 +1,17 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"go-api-template/configuration"
 	"go-api-template/pkg/logger"
 
+	"github.com/XSAM/otelsql"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // driver for PostgreSQL
+	"go.opentelemetry.io/otel"
+
+	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 )
 
 type Connection struct {
@@ -23,13 +28,28 @@ func NewConnection(cfg *configuration.Env) *Connection {
 		cfg.PostgresSSLMode,
 	)
 
-	db, err := sqlx.Open("postgres", psqlURL)
+	// Create an instrumented sql.DB
+	sqlDB, err := otelsql.Open("postgres", psqlURL,
+		otelsql.WithAttributes(
+			semconv.DBSystemPostgreSQL,
+			semconv.DBNameKey.String(cfg.PostgresDB),
+		),
+		otelsql.WithTracerProvider(otel.GetTracerProvider()),
+		otelsql.WithSpanOptions(otelsql.SpanOptions{
+			Ping:     true,
+			RowsNext: true,
+		}),
+	)
 	if err != nil {
-		logger.Fatalf("connecting to database failed. %v", err)
+		logger.Fatalf("failed to create database connection: %v", err)
 	}
 
-	if err = db.Ping(); err != nil {
-		logger.Fatalf("connecting to database failed. %v", err)
+	// Wrap sql.DB with sqlx
+	db := sqlx.NewDb(sqlDB, "postgres")
+
+	// Test the connection with context
+	if err = db.PingContext(context.Background()); err != nil {
+		logger.Fatalf("connecting to database failed: %v", err)
 	}
 
 	logger.Infof("database connection established")

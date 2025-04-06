@@ -7,6 +7,7 @@ import (
 	"go-api-template/middleware"
 	"go-api-template/model"
 	"go-api-template/pkg/logger"
+	"go-api-template/pkg/telemetry"
 	"go-api-template/repository"
 	"go-api-template/service"
 	"log"
@@ -55,6 +56,18 @@ func main() {
 
 	// Initialize the controllers
 	controllers := controller.NewControllers(services)
+
+	// Initialize OpenTelemetry
+	if cfg.Telemetry.Enabled {
+		otel := configuration.TelemetryNew()
+		otel.ServiceName = cfg.Telemetry.ServiceName
+		otel.Environment = cfg.Telemetry.Environment
+		otel.Endpoint = cfg.Telemetry.Endpoint
+		otel.Headers = cfg.Telemetry.Headers
+
+		cleanup := telemetry.InitTracer(otel)
+		defer cleanup()
+	}
 
 	// Initialize router
 	router, err := middleware.NewRouter(cfg, controllers)

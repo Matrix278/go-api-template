@@ -50,12 +50,12 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfSelectUserByFilte
 	}
 
 	suite.userRepositoryMock.
-		On("SelectUserByFilter", filter).
+		On("SelectUserByFilter", suite.ctx.Request.Context(), filter).
 		Return(nil, suite.failedError).
 		Once()
 
 	// Act
-	response, err := suite.service.UserByID(suite.ctx, suite.userID)
+	response, err := suite.service.UserByID(suite.ctx.Request.Context(), suite.userID)
 
 	// Assert
 	suite.Nil(response)
@@ -71,12 +71,12 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsError_InCaseOfUserNotFound() {
 	}
 
 	suite.userRepositoryMock.
-		On("SelectUserByFilter", filter).
+		On("SelectUserByFilter", suite.ctx.Request.Context(), filter).
 		Return(nil, commonerrors.ErrUserNotFound).
 		Once()
 
 	// Act
-	response, err := suite.service.UserByID(suite.ctx, suite.userID)
+	response, err := suite.service.UserByID(suite.ctx.Request.Context(), suite.userID)
 
 	// Assert
 	suite.Nil(response)
@@ -96,12 +96,12 @@ func (suite *UserTestSuite) Test_UserByID_ReturnsUser_InCaseOfSuccess() {
 	}
 
 	suite.userRepositoryMock.
-		On("SelectUserByFilter", filter).
+		On("SelectUserByFilter", suite.ctx.Request.Context(), filter).
 		Return(user, nil).
 		Once()
 
 	// Act
-	response, err := suite.service.UserByID(suite.ctx, suite.userID)
+	response, err := suite.service.UserByID(suite.ctx.Request.Context(), suite.userID)
 
 	// Assert
 	suite.Nil(err)
