@@ -5,7 +5,7 @@ go 1.24.2
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-openapi/strfmt v0.23.0
-	github.com/go-playground/validator/v10 v10.26.0
+	github.com/go-playground/validator/v10 v10.27.0
 	github.com/goccy/go-json v0.10.5
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
